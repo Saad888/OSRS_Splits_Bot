@@ -67,26 +67,6 @@ class DocScanner:
             values.append((name, amount))
         return values
 
-    async def _copy_row_to_target(self, row, target_row):
-        """Copies formula from row and pastes in target row"""
-        alphabet = list(string.ascii_uppercase)
-        empty_count = 0
-        for c in alphabet:
-            cell = c + str(row)
-            value = self.sheet.acell(cell, value_render_option='FORMULA').value
-            value = str(value)
-            empty_count = empty_count + 1 if len(value) == 0 else 0
-            if empty_count == 3:
-                break
-            target_cell = c + str(target_row)
-            for i in alphabet:
-                acell = i + str(row)
-                target_acell = i + str(target_row)
-                value = value.replace(acell, target_acell)
-            self.sheet.update_acell(target_cell, value)
-
-        
-
     async def _set_split(self, row, value):
         """Update split"""
         self.sheet.update_cell(row, 2, value)
@@ -110,24 +90,29 @@ class DocScanner:
             print("ERROR: Could not find name")
             return None, None
 
-    async def add_user(self, name, splits=0):
-        """Adds user"""
+    async def confirm_user(self, name, splits_list=None):
+        """Confirms if user exists"""
+        if splits_list is None:
+            splits_list = await self._get_all_splits()
+        index = await self._exact_search(name, splits_list)
+        return index != -1
 
-        splits_list = await self._get_all_splits()
-        # Confirm if user exists
-        check_exists = await self._exact_search(name, splits_list)
-        if check_exists != -1:
+    async def add_user(self, name):
+        """Adds user"""
+        # Confirm if user exists (redundant, but a procaution)
+        if not self.confirm_user(name):
             return None
 
         # If user does not exist, add to bottom with split
-        max_row = len(splits_list) + 1
-        self.sheet.update_cell(max_row, 1, name)
-        self.sheet.update_cell(max_row, 2, 0)
+        col_list = self.sheet.col_values(1)
+        target_row = len(col_list) + 2
+        self.sheet.update_cell(target_row, 1, name)
+        self.sheet.update_cell(target_row, 2, 0)
         return name
-
 
     async def delete_user():
         """ADD COMMANDS"""
+
         pass
 
 
