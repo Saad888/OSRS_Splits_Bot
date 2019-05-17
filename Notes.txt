@@ -1,0 +1,16 @@
+
+
+
+- doc scan:
+    - add decorator to check to api error
+    - Return error value when error activates
+    - add additional documentation and clean up the script to be readable
+
+- main():
+    - build this already ffs
+
+- protections:
+    - get validator for existing json()
+
+- documentation:
+    - do it

@@ -70,6 +70,7 @@ class DocScanner:
     async def _set_split(self, row, value):
         """Update split"""
         self.sheet.update_cell(row, 2, value)
+        return True
 
     async def get_split(self, name):
         """Gets individual user split"""
@@ -77,7 +78,7 @@ class DocScanner:
         index = await self._get_name_index(name, splits_list)
         return splits_list[index][1] if index != -1 else None
 
-    async def update_split(self, name, delta):
+    async def update_split(self, name, delta, items=None):
         """Adds value of delta to name's split"""
         splits_list = await self._get_all_splits()
         index = await self._get_name_index(name, splits_list)
@@ -85,10 +86,13 @@ class DocScanner:
             prev_val = splits_list[index][1]
             new_val = prev_val + delta
             await self._set_split(index + 1, new_val)
-            return new_val, prev_val
+            if items is not None:
+                item_list = self.sheet.cell(index + 1, 3).value
+                new_item_list = item_list + ", " + items
+                self.sheet.update_cell(index + 1, 3, new_item_list)
+            return True
         else:
-            print("ERROR: Could not find name")
-            return None, None
+            return False
 
     async def confirm_user(self, name, splits_list=None):
         """Confirms if user exists"""
@@ -97,23 +101,34 @@ class DocScanner:
         index = await self._exact_search(name, splits_list)
         return index != -1
 
-    async def add_user(self, name):
+    async def add_user(self, name, splits=0, items=''):
         """Adds user"""
         # Confirm if user exists (redundant, but a procaution)
-        if not self.confirm_user(name):
-            return None
+        if await self.confirm_user(name):
+            return False
 
         # If user does not exist, add to bottom with split
         col_list = self.sheet.col_values(1)
-        target_row = len(col_list) + 2
-        self.sheet.update_cell(target_row, 1, name)
-        self.sheet.update_cell(target_row, 2, 0)
-        return name
+        row = len(col_list) + 1
+        self.sheet.update_cell(row, 1, name)
+        self.sheet.update_cell(row, 2, splits)
+        self.sheet.update_cell(row, 3, items)
+        date = self.sheet.cell(row, 4).value
+        self.sheet.update_cell(row, 4, date)
+        return True
 
-    async def delete_user():
-        """ADD COMMANDS"""
+    async def delete_user(self, name):
+        splits_list = await self._get_all_splits()
+        # Confirm if user exists (redundant, but a procaution)
+        if not await self.confirm_user(name, splits_list):
+            return False
 
-        pass
+        # If user exists, deletes the row:
+        index = await self._get_name_index(name, splits_list)
+        row = index + 1
+        self.sheet.delete_row(row)
+        return True
+
 
 
 
@@ -121,4 +136,10 @@ class DocScanner:
 
 if __name__ == "__main__":
     test = DocScanner("Budget", "test")
-    vals = asyncio.run(test._get_all_splits())
+    try:
+        vals = asyncio.run(test._get_all_splits())
+    except(gspread.exceptions.APIError): 
+        print("IT WORKED!")
+
+
+# THE ERROR CODE IS gspread.exceptions.APIError
