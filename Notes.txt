@@ -5,6 +5,7 @@
     - add decorator to check to api error
     - Return error value when error activates
     - add additional documentation and clean up the script to be readable
+    - fix imports to excude needless ones
 
 - main():
     - build this already ffs
