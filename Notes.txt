@@ -15,3 +15,6 @@
 
 - documentation:
     - do it
+
+
+- Move config files within nested folder
