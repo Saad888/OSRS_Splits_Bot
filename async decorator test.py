@@ -1,7 +1,6 @@
 import asyncio
 
 
-
 def error_check(func):
     async def wrapper(*args, **kwargs):
         try:
@@ -11,11 +10,11 @@ def error_check(func):
             return -1
     return wrapper
 
+
 @error_check
 async def function1(i):
     await asyncio.sleep(2)
-    return 5/i
-
+    return 5 / i
 
 
 async def main():
@@ -27,4 +26,3 @@ async def main():
 
 asyncio.run(main())
 print("Completed")
-
