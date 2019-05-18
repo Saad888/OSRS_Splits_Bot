@@ -1,0 +1,2 @@
+class ResetConfigsError(Exception):
+    pass

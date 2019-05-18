@@ -1,15 +1,15 @@
 # Copied text to test bot
 import discord
 import json
+import asyncio
 
-with open('configs.json') as file:
+with open('consdfigs.json') as file:
     configs = json.load(file)
 
 
 TOKEN = configs["Bot Token"]
 
 client = discord.Client()
-
 
 @client.event
 async def on_message(message):
