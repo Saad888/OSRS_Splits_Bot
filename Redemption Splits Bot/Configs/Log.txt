@@ -1,0 +1,52 @@
+2019-05-18 19:48:33 - ==========
+2019-05-18 19:48:33 - ==========
+2019-05-18 19:48:33 - Welcome! Initializing bot...
+2019-05-18 19:48:33 - Loading Configs File...
+2019-05-18 19:48:33 - configs.json file loaded
+2019-05-18 19:48:33 - Verifying configuration settings...
+2019-05-18 19:48:33 - Bot Token: NTc4MzQ1ODIyNzU2OTI5NTU3.XNyQ4Q.LqG8C8grbZHdUy0QxGxVcTSRrVI
+2019-05-18 19:48:33 - Admin Rank was not found!
+2019-05-18 19:48:33 - Please enter a value for Admin Rank: 
+2019-05-18 19:48:43 - Admin Rank: mod 
+2019-05-18 19:48:43 - Spreadsheet URL was not found!
+2019-05-18 19:48:43 - Please enter a value for Spreadsheet URL: 
+2019-05-18 19:49:05 - Spreadsheet URL: https://docs.google.com/spreadsheets/d/1Py0pico9VWu0Nno0nuVFl6kBwZrkmxM8rqlSMWtuGbo/edit#gid=0
+2019-05-18 19:49:05 - Worksheet Name was not found!
+2019-05-18 19:49:05 - Please enter a value for Worksheet Name: 
+2019-05-18 19:49:10 - Worksheet Name: test
+2019-05-18 19:49:10 - Name Column was not found!
+2019-05-18 19:49:10 - Please enter a value for Name Column: 
+2019-05-18 19:49:19 - Name Column: A 
+2019-05-18 19:49:19 - Split Column was not found!
+2019-05-18 19:49:19 - Please enter a value for Split Column: 
+2019-05-18 19:49:21 - Split Column: B 
+2019-05-18 19:49:21 - Items Column was not found!
+2019-05-18 19:49:21 - Please enter a value for Items Column: 
+2019-05-18 19:49:24 - Items Column: C
+2019-05-18 19:49:24 - Date Column was not found!
+2019-05-18 19:49:24 - Please enter a value for Date Column: 
+2019-05-18 19:49:29 - Date Column: D
+2019-05-18 19:49:29 - If any of these values are incorrect, please modify or delete the congifs.json file located in the Configs folder, and restart the bot
+2019-05-18 19:49:32 - -----
+2019-05-18 19:49:32 - Preparing to open spreadsheet...
+2019-05-18 19:49:32 - VALUE ERROR: Values for one or more of the colums is     incorrect!
+2019-05-18 19:49:32 - Please correct in the configs file (Configs/config.json)    or delete the file to start the first time set-up again.
+2019-05-18 20:10:31 - ==========
+2019-05-18 20:10:31 - ==========
+2019-05-18 20:10:31 - Welcome! Initializing bot...
+2019-05-18 20:10:31 - Loading Configs File...
+2019-05-18 20:10:31 - configs.json file loaded
+2019-05-18 20:10:31 - Verifying configuration settings...
+2019-05-18 20:10:31 - Bot Token: NTc4MzQ1ODIyNzU2OTI5NTU3.XNyQ4Q.LqG8C8grbZHdUy0QxGxVcTSRrVI
+2019-05-18 20:10:31 - Admin Rank: mod 
+2019-05-18 20:10:31 - Spreadsheet URL: https://docs.google.com/spreadsheets/d/1Py0pico9VWu0Nno0nuVFl6kBwZrkmxM8rqlSMWtuGbo/edit#gid=0
+2019-05-18 20:10:31 - Worksheet Name: test
+2019-05-18 20:10:31 - Name Column: A 
+2019-05-18 20:10:31 - Split Column: B 
+2019-05-18 20:10:31 - Items Column: C
+2019-05-18 20:10:31 - Date Column: D
+2019-05-18 20:10:31 - If any of these values are incorrect, please modify or delete the congifs.json file located in the Configs folder, and restart the bot
+2019-05-18 20:10:34 - -----
+2019-05-18 20:10:34 - Preparing to open spreadsheet...
+2019-05-18 20:10:34 - VALUE ERROR: Values for one or more of the colums is     incorrect!
+2019-05-18 20:10:34 - Please correct in the configs file (Configs/config.json)    or delete the file to start the first time set-up again.

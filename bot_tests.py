@@ -3,13 +3,14 @@ import discord
 import json
 import asyncio
 
-with open('consdfigs.json') as file:
+with open('configs.json') as file:
     configs = json.load(file)
 
 
 TOKEN = configs["Bot Token"]
-
+#TOKEN = '54fdsafdsaf1dsa'
 client = discord.Client()
+
 
 @client.event
 async def on_message(message):
@@ -21,6 +22,9 @@ async def on_message(message):
         msg = 'Hello {0.channel.name}'.format(message)
         await message.channel.send(msg)
 
+    if message.content.startswith('!exit'):
+        await client.logout()
+
 
 @client.event
 async def on_ready():
@@ -29,5 +33,17 @@ async def on_ready():
     print(client.user.id)
     print('------')
 
+try:
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(client.start(TOKEN))
+except(discord.errors.LoginFailure):
+    print("saved")
 
-client.run(TOKEN)
+'''
+try:
+
+    
+    #asyncio.run(bot_run(TOKEN))
+except(discord.errors.LoginFailure):
+    print("DAUYMM GENIA")
+'''

@@ -52,7 +52,7 @@ class DocScanner:
             'https://www.googleapis.com/auth/drive'
         ]
         creds = ServiceAccountCredentials.from_json_keyfile_name(
-            './Configs/credentials.json', 
+            './Configs/credentials.jsn', 
             scope
         )
 
@@ -246,4 +246,8 @@ class DocScanner:
 
 # The error code is gspread.exceptions.APIError
 if __name__ == "__main__":
-    test = DocScanner("https://docs.google.com/spreadsheets/d/1Py0pico9VWu0Nno0nuVFl6kBwZrkmxM8rqlSMWtuGbo/edit#gid=176933786", "test")
+    try:
+        test = DocScanner("https://docs.google.com/spreadsheets/d/1Py0pico9VWu0Nno0nuVFl6kBwZrkmxM8rqlSMWtuGbo/edit#gid=176933786", "tesst", [1, 2, 3, 4])
+    except (gspread.exceptions.WorksheetNotFound, FileNotFoundError): 
+        print("error")
+
