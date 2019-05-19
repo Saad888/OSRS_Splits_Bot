@@ -1,23 +1,27 @@
+import sys
+import os
+import asyncio 
+import time
 import discord
 import json
 import gspread
-import sys
-import asyncio 
-import time
 import help_text
 from doc_scan import DocScanner
 from datetime import datetime
 
+try:
+    os.mkdir("Configs")
+except(FileExistsError):
+    pass
 
 client = discord.Client()
-
 
 def print_log(text, delay=0.35):
     """Prints message with time in console and to log file"""
     curTime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     message = curTime + " - " + str(text)
     print(message)
-    with open("./Configs/Log.txt", "a") as logger:
+    with open("Log.txt", "a") as logger:
         logger.write(message + "\n")
     time.sleep(delay)
 
@@ -32,8 +36,7 @@ def validate_date(given_date):
 
 
 def invalid_input():
-    print_log("Please correct in the configs file (Configs/config.json)\
-    or delete the file to start the first time set-up again.")
+    print_log(help_text.Invalid_Input)
     sys.exit()
 
 
@@ -44,7 +47,7 @@ def first_time_setup():
     input()
 
     configs = {}
-    print_log("1. Enter the Bot Token from the discord developement page (consult Readme for more info")
+    print_log("1. Enter the Bot Token from the discord developement page (consult Readme for more info)")
     configs["Bot Token"] = str(input()).strip()
 
     print_log("2. Enter the EXACT name of the required rank for bot admin commands")
@@ -73,7 +76,7 @@ try:
         print_log("Loading Configs File...")
         configs = {}
         # Opens and loads configs file
-        with open("./Configs/configs.json", "r") as configs_file:
+        with open("configs.json", "r") as configs_file:
             print_log("configs.json file loaded")
             configs = json.load(configs_file)
     # If Configs/configs.json does not exist, initiates FTS
@@ -85,7 +88,7 @@ try:
     # Verifies all entries and google credentials file exist. 
     print_log("Verifying configuration settings...")
     try:
-        file = open("./Configs/credentials.json", "r")
+        file = open("credentials.json", "r")
         file.close()
     except(FileNotFoundError):
         print_log("credentials.json was not found, please consult the Readme")
@@ -199,9 +202,11 @@ async def on_message(message):
                     username = response[2]
                     prev_val = response[0]
                     new_val = response[1]
-                    reply = "{}'s split changed from {:,} to {:,}.".format(username,
-                                                                          prev_val, 
-                                                                          new_val)
+                    reply = "{}'s split changed from {:,} to {:,}.".format(
+                        username,
+                        prev_val, 
+                        new_val
+                    )
                 else:
                     reply = "Can't find player {}".format(name)
             else:
@@ -210,13 +215,13 @@ async def on_message(message):
             await message.channel.send(reply)
             print_log(reply)
 
-        if message.content.startswith("!add_user ") and admin is True:
+        if message.content.startswith("!add ") and admin is True:
             print_log("User {}: {}".format(author, message.content))
             """Adds user with inputs (!add_user name (split) (date) (items))"""
             msg = message.content
 
             # Splits input 
-            request = msg.replace("!add_user", "").split(",")
+            request = msg.replace("!add", "").split(",")
 
             # Grabs name
             name = request[0].strip()
@@ -269,8 +274,9 @@ async def on_message(message):
             reply = reply + "\n" + help_text.admin_help_reply
         await message.channel.send(reply)
 
-    if message.content.startswith("!exit"):
-        await client.logout()
+    # Exit command - for debugging purposes only
+    #if message.content.startswith("!exit"):
+    #    await client.logout()
 
 
 @client.event

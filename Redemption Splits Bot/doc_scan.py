@@ -49,7 +49,7 @@ class DocScanner:
             'https://www.googleapis.com/auth/drive'
         ]
         creds = ServiceAccountCredentials.from_json_keyfile_name(
-            './Configs/credentials.json', 
+            'credentials.json', 
             scope
         )
 

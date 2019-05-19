@@ -23,4 +23,6 @@ examples:
 API_error = """API Error! There's been too many commands in too short of a period of time. The API can only handle 100 actions per 100 seconds. 
 Please wait at least two minutes and try again"""
 
-Initial_Message = "If any of these values are incorrect, please modify or delete the congifs.json file located in the Configs folder, and restart the bot"
+Initial_Message = "If any of these values are incorrect, please modify or delete the congifs.json and restart the bot"
+
+Invalid_Input = "Please correct in the configs file (config.json) or delete the file to start the first time set-up again."

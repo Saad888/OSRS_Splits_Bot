@@ -12,7 +12,7 @@ Requires admin or user rank
 This will print out all the functions that a user can do based on their role
 
 
-!add <user> <amount>
+!update <user> <amount>
 -----
 Requires admin rank
 This will add <amount> to the <user>'s split. 
@@ -22,12 +22,6 @@ This will add <amount> to the <user>'s split.
      match their RSN)
 
 
-!remove <user> <amount>
------
-Requires admin rank
-This will remove <amount> from the <user>'s split
-Requirements for <amount> and <user> match !add
-
 
 !add_user <user> <amount>
 -----
@@ -36,10 +30,6 @@ Similar to !add, but this will create a brand new user and give them the split
 If <amount> is left out, it will be assumed as 0
 
 
-!remove <user> 
------
-Requires admin rank
-This will remove the specified user. 
 
 
 !split <user>
