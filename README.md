@@ -5,10 +5,10 @@ This discord bot automatically pulls and updates information regarding OSRS spli
 
 ## Main Discord Commands:
 
-### **!splits <player>**:
+### **!splits (player)**:
 Finds the player (by their RSN) and get's their split value. The search for the user is a bit forgiving for spelling errors. 
 
-### **!update <player>, <amount>, <items>**
+### **!update (player), (amount), (items)**
 This command requires the bot admin rank.
 Finds the player and adds the amount specified in <amount>. This can be a negative number if you wish to reduce their split. 
 You can also add items or a list of items under <item>. This is entirely optional, and can basically be anything. 
@@ -16,7 +16,7 @@ When using this command, make sure the number put in for <amount> is just a raw 
 > !update Jagex, 500000
 > !update Jagex, 500000, Swords x3, Cabbage x4
 
-### **!add <player>, <split>, <date>, <items>**
+### **!add (player), (split), (date), (items)**
 This command requires the bot admin rank.
 This adds the player to the end of the spreadsheet, as well as the specified split value, date, and items. 
 Note that the last three are completely optional. If you just wish to add a player to the list, you can just specify their RSN.
