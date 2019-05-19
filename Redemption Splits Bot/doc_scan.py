@@ -126,7 +126,7 @@ class DocScanner:
             name = col_name[i]
             try:
                 amount = int(col_split[i].replace(",", "").replace("$", ""))
-            except (ValueError):
+            except (ValueError, IndexError):
                 amount = None
             values.append((name, amount))
         return values
@@ -221,26 +221,9 @@ class DocScanner:
         return True  
 
 
-    async def delete_user(self, name):
-        """Deletes row with indicated user. THIS IS NOT REVERSIBLE"""
-
-        # Gets splits list and confirms if the user does not exist
-        # Redundant in practical application, but added as a precaution
-        splits_list = await self._get_all_splits()
-        if not await self.confirm_user(name, splits_list):
-            return False
-
-        # If user exists, deletes the row
-        index = await self._get_name_index(name, splits_list)
-        row = index + 1
-        self.sheet.delete_row(row)
-
-        # Confirms user is deleted
-        return True
-
 
 # The error code is gspread.exceptions.APIError
 if __name__ == "__main__":
-    test = DocScanner("https://docs.google.com/spreadsheets/d/1Py0pico9VWu0Nno0nuVFl6kBwZrkmxM8rqlSMWtuGbo/edit#gid=176933786", "test", [1, 2, 3, 4])
+    test = DocScanner("https://docs.google.com/spreadsheets/d/1Py0pico9VWu0Nno0nuVFl6kBwZrkmxM8rqlSMWtuGbo/edit#gid=176933786", "test")
 
 

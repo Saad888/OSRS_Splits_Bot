@@ -4,6 +4,7 @@ import gspread
 import sys
 import asyncio 
 import time
+import help_text
 from doc_scan import DocScanner
 from datetime import datetime
 
@@ -19,6 +20,15 @@ def print_log(text, delay=0.35):
     with open("./Configs/Log.txt", "a") as logger:
         logger.write(message + "\n")
     time.sleep(delay)
+
+
+def validate_date(given_date):
+    """Confirms format of the date to match dd/mm/YYYY or mm/dd/YYYY"""
+    try:
+        datetime.strptime(given_date, "%m/%d/%Y")
+        return True
+    except(ValueError, TypeError):
+        return False
 
 
 def invalid_input():
@@ -51,10 +61,12 @@ def first_time_setup():
         json.dump(configs, file, indent=4)
 
 
+# Initiates bot, verifies all settings then launches Docs API
 try:
     print_log("=" * 10)
     print_log("=" * 10)
     print_log("Welcome! Initializing bot...")
+
 
     # Loads configs file, if configs file does not exist initiates first time setup
     try:
@@ -64,12 +76,11 @@ try:
         with open("./Configs/configs.json", "r") as configs_file:
             print_log("configs.json file loaded")
             configs = json.load(configs_file)
-
-
     # If Configs/configs.json does not exist, initiates FTS
     except(FileNotFoundError):
         print_log("configs.json was not found, initiating First Time Setup", 2)
         first_time_setup()
+
 
     # Verifies all entries and google credentials file exist. 
     print_log("Verifying configuration settings...")
@@ -94,9 +105,7 @@ try:
         invalid_input()
 
     print(json.dumps(configs, indent=4))
-    print_log("If any of these values are incorrect, please modify or \
-    delete the congifs.json file located in the Configs folder, and \
-    restart the bot", 3)
+    print_log(help_text.Initial_Message, 3)
 
     print_log("-" * 5)
 
@@ -117,88 +126,161 @@ try:
         print_log("ERROR: Document could not find worksheet " + worksheet)
         invalid_input()
     except(FileNotFoundError):
-        print_log("ERROR: Document could not be loaded from the URL")
-        invalid_input()
+        print_log("ERROR: Credentials file could not be found")
+        print_log("Please obtain credentials as outlined in the Readme")
 
     admin_rank = configs["Admin Rank"]
-    token = configs["Token"]
+    token = configs["Bot Token"]
+
 
 except(SystemExit):
     print_log("Press enter to exit...")
     input()
 
 
+
 @client.event
 async def on_message(message):
+    """Initiates command by bot based on inputs"""
+
     # we do not want the bot to reply to itself
     if message.author == client.user:
         return
 
+    author = message.author.name
     admin = str(message.author.roles).find(admin_rank) != -1
 
-    if message.content.startswith('!splits'):
-        msg = message.content
-        username = msg.replace('!splits', '').strip()
-        response = await doc.get_split(username)
-        print(response)
-        if response is None:
-            reply = "Can't find the name {} in the list!".format(username)
-        else:
-            name = response[1]
-            amount = response[0]
-            reply = "{} has an item split of {:,}!".format(name, amount)
+    incorrect_input_message = {
+        "int": "Please enter a number without commas or symbols for the split.",
+        "date": "Please make sure date format is M/D/YYYY."
+    }
+
+    try:
+        if message.content.startswith("!splits "):
+            print_log("User {}: {}".format(author, message.content))
+            """Returns splits by user request"""
+            msg = message.content
+            username = msg.replace("!splits", "").strip()
+            response = await doc.get_split(username)
+            print(response)
+            if response is None:
+                reply = "Can't find the name {} in the list!".format(username)
+            else:
+                name = response[1]
+                amount = response[0]
+                reply = "{} has an item split of {:,}!".format(name, amount)
+            await message.channel.send(reply)
+            print_log(reply)
+            
+        if message.content.startswith("!update ") and admin is True:
+            print_log("User {}: {}".format(author, message.content))
+            """Adds split amount if user has admin rank"""
+            msg = message.content
+
+            # Splits input 
+            request = msg.replace("!update", "").split(",")
+
+            # Grabs name
+            name = request[0].strip()
+
+            # Gets splits value, if value was invalid prints appropriate message
+            try:
+                delta = int(request[1].strip())
+            except(ValueError, SyntaxError, TypeError, IndexError):
+                delta = None
+
+            # Gets list of items if it exists
+            item_list = ", ".join(request[2:]).strip() if len(request) > 2 else None
+            
+            # Updates split value and sends response to discord server
+            if delta is not None:
+                response = await doc.update_split(name, delta, item_list)
+                if response is not None:
+                    username = response[2]
+                    prev_val = response[0]
+                    new_val = response[1]
+                    reply = "{}'s split changed from {:,} to {:,}.".format(username,
+                                                                          prev_val, 
+                                                                          new_val)
+                else:
+                    reply = "Can't find player {}".format(name)
+            else:
+                reply = incorrect_input_message["int"]
+
+            await message.channel.send(reply)
+            print_log(reply)
+
+        if message.content.startswith("!add_user ") and admin is True:
+            print_log("User {}: {}".format(author, message.content))
+            """Adds user with inputs (!add_user name (split) (date) (items))"""
+            msg = message.content
+
+            # Splits input 
+            request = msg.replace("!add_user", "").split(",")
+
+            # Grabs name
+            name = request[0].strip()
+            reply = "The player {} was added".format(name)
+
+            # Will prevent the doc API call if the provided inputs are incorrect
+            validate_inputs = True
+            splits = 0
+            date = None
+            item_list = ''
+
+            # Gets and confirms split value
+            if len(request) > 1:
+                try:
+                    split = int(request[1].strip())
+                    reply += " with a split value of {}".format(split)
+                except(TypeError, ValueError):
+                    validate_inputs = False
+                    reply = incorrect_input_message["int"]
+
+            # Gets and confirms date value
+            if (len(request) > 2) and (validate_inputs is True):
+                date = request[2].strip()
+                if validate_date(date) is True:
+                    reply += ", and the join date {}".format(date)
+                else:
+                    validate_inputs = False
+                    reply = incorrect_input_message["date"]
+
+            # Gets list of items
+            item_list = ", ".join(request[3:]).strip() if len(request) > 2 else ""
+
+            if validate_inputs is True:
+                reply += "!"
+                added = await doc.add_user(name, splits, date, item_list)
+                if added is False:
+                    reply = "User {} already exists!".format(name)
+
+            await message.channel.send(reply)
+            print_log(reply)
+
+    except(gspread.exceptions.APIError):
+        reply = help_text.API_error
         await message.channel.send(reply)
-        
-    if message.content.startswith('!add') and admin is True:
-        """Adds split amount if user has admin rank"""
-        msg = message.content
 
-        # Splits input 
-        request = msg.replace('!add', '').split(',')
+    if message.content.startswith("!help"):
+        print_log("User {}: {}".format(author, message.content))
+        reply = help_text.help_reply
+        if admin is True:
+            reply = reply + "\n" + help_text.admin_help_reply
+        await message.channel.send(reply)
 
-        # Grabs name
-        name = request[0].strip()
-
-        # Gets splits value, if value was invalid prints appropriate message
-        try:
-            delta = int(request[1].strip())
-        except(ValueError, SyntaxError, TypeError, IndexError):
-            delta = None
-
-        # Gets list of items if it exists
-        item_list = ", ".join(request[2:]).strip() if len(request) > 2 else None
-        
-        if delta is not None:
-            response = await doc.update_split(name, item_list, delta)
-            username = response[2]
-            prev_val = response[0]
-            new_val = response[1]
-            reply = "{}'s split changed from {:,} to {:,}".format(username,
-                                                                  prev_val, 
-                                                                  new_val)
-
-
-    if message.content.startswith('!add_user'):
-        await client.logout()
-
-    if message.content.startswith('!remove_user'):
-        await client.logout()
-
-    if message.content.startswith('!help'):
-        await client.logout()
-
-    if message.content.startswith('!exit '):
+    if message.content.startswith("!exit"):
         await client.logout()
 
 
 @client.event
 async def on_ready():
-    print_log('Logged in as', 0)
-    print_log(client.user.name, 0)
-    print_log(client.user.id, 0)
-    print_log('------', 0)
+    print_log("Logged in as")
+    print_log(client.user.name)
+    print_log(client.user.id)
+    print_log("------")
 
-
+# Initiates dicord API
 try:
     print_log("Initiating Discord API...")
     loop = asyncio.get_event_loop()
@@ -214,4 +296,3 @@ except(discord.errors.GatewayNotFound, discord.errors.HTTPException):
 except(SystemExit):
     print_log("Press enter to exit...")
     input()
-
