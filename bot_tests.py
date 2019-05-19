@@ -19,7 +19,8 @@ async def on_message(message):
         return
 
     if message.content.startswith('!hello'):
-        msg = 'Hello {0.channel.name}'.format(message)
+
+        msg = str(message.author.roles).find('yikes')
         await message.channel.send(msg)
 
     if message.content.startswith('!exit'):
@@ -38,6 +39,16 @@ try:
     loop.run_until_complete(client.start(TOKEN))
 except(discord.errors.LoginFailure):
     print("saved")
+
+
+def error_check(func):
+    async def wrapper(*args, **kwargs):
+        try:
+            result = await func(*args, **kwargs)
+            return result
+        except (gspread.exceptions.APIError):
+            return "ERROR"
+    return wrapper
 
 '''
 try:

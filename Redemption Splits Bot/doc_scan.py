@@ -32,7 +32,7 @@ class DocScanner:
         Deletes row with user in spreadsheet (NON REVERSIBLE!)
     """
 
-    def __init__(self, ss_URL: str, ws_name: str, col_indexes: list):
+    def __init__(self, ss_URL: str, ws_name: str):
         """Initiates DocScanner class
         
         Parameters:
@@ -41,9 +41,6 @@ class DocScanner:
             URL of the google doc
         ws_name: str
             Exact name of the specific worksheet within the google doc
-        col_indexes: list
-            List of column indexes for names, splits, items, and join date
-            in that order (max 26)
         """
 
         # Grabs credentials and API information
@@ -52,7 +49,7 @@ class DocScanner:
             'https://www.googleapis.com/auth/drive'
         ]
         creds = ServiceAccountCredentials.from_json_keyfile_name(
-            './Configs/credentials.jsn', 
+            './Configs/credentials.json', 
             scope
         )
 
@@ -60,11 +57,6 @@ class DocScanner:
         gc = gspread.authorize(creds)
         self.sheet = gc.open_by_url(ss_URL).worksheet(ws_name)
 
-        # Sets the column indexes
-        self.c_name = col_indexes[0]
-        self.c_split = col_indexes[1]
-        self.c_items = col_indexes[2]
-        self.c_date = col_indexes[3]
 
 
     async def _fuzzy_search(self, name, splits_list=None):
@@ -117,15 +109,15 @@ class DocScanner:
             return -1
         else:
             index = await self._exact_search(fuzz_name, splits_list)
-            return index 
+            return index
 
 
     async def _get_all_splits(self):
         """Gets all characters and split values from spreadsheet"""
 
         # Grabs values from sheet
-        col_name = self.sheet.col_values(self.c_name)
-        col_split = self.sheet.col_values(self.c_split)
+        col_name = self.sheet.col_values(1)
+        col_split = self.sheet.col_values(2)
 
         # Creates list of tuple pairs with (name, split amount)
         # If split cannot be made proper integer, returns None for ammount
@@ -142,7 +134,7 @@ class DocScanner:
 
     async def _set_split(self, row, value):
         """Update split at provided row to new value"""
-        self.sheet.update_cell(row, self.c_split, value)
+        self.sheet.update_cell(row, 2, value)
         return True
 
 
@@ -154,7 +146,10 @@ class DocScanner:
         # Grabs index based on fuzzy search match of provided name
         index = await self._get_name_index(name, splits_list)
         # If player index is found, returns split. If not found, returns None
-        return splits_list[index][1] if index != -1 else None
+        if index == -1:
+            return None
+        else:
+            return splits_list[index][1], splits_list[index][0]
 
 
     async def update_split(self, name, delta, items=None):
@@ -168,22 +163,22 @@ class DocScanner:
 
         # If index is valid, adds provided value to splits
         if index == -1:
-            return None, None
-        prev_val = splits_list[index][1]
+            return None
+        prev_val = int(splits_list[index][1])
         new_val = prev_val + delta
         await self._set_split(index + 1, new_val)
 
         # If item provided, appends item to end of item list
         if items is not None:
-            item_list = self.sheet.cell(index + 1, self.c_items).value
+            item_list = self.sheet.cell(index + 1, 3).value
             if len(item_list) != 0:
                 new_item_list = item_list + ", " + items
             else: 
                 new_item_list = items
-            self.sheet.update_cell(index + 1, self.c_items, new_item_list)
+            self.sheet.update_cell(index + 1, 3, new_item_list)
 
         # Returns both previous and new value
-        return prev_val, new_val 
+        return prev_val, new_val, splits_list[index][0] 
 
 
     async def confirm_user(self, name, splits_list=None):
@@ -208,19 +203,19 @@ class DocScanner:
         # If user does not exist, add to bottom with split
 
         # Gets row for the end of the list
-        col_list = self.sheet.col_values(self.c_name)
+        col_list = self.sheet.col_values(1)
         row = len(col_list) + 1
 
         # Updates names, splits and items based on provided values
-        self.sheet.update_cell(row, self.c_name, name)
-        self.sheet.update_cell(row, self.c_splits, splits)
-        self.sheet.update_cell(row, self.c_items, items)
+        self.sheet.update_cell(row, 1, name)
+        self.sheet.update_cell(row, 2, splits)
+        self.sheet.update_cell(row, 3, items)
 
         # If date is not provided, uses the existing cell value TODAY()
         # Replaces the function in the cell with the value
         if date is None:
-            date = self.sheet.cell(row, self.c_date).value
-        self.sheet.update_cell(row, self.c_date, date)
+            date = self.sheet.cell(row, 4).value
+        self.sheet.update_cell(row, 4, date)
 
         # Confirms user was added
         return True  
@@ -246,8 +241,6 @@ class DocScanner:
 
 # The error code is gspread.exceptions.APIError
 if __name__ == "__main__":
-    try:
-        test = DocScanner("https://docs.google.com/spreadsheets/d/1Py0pico9VWu0Nno0nuVFl6kBwZrkmxM8rqlSMWtuGbo/edit#gid=176933786", "tesst", [1, 2, 3, 4])
-    except (gspread.exceptions.WorksheetNotFound, FileNotFoundError): 
-        print("error")
+    test = DocScanner("https://docs.google.com/spreadsheets/d/1Py0pico9VWu0Nno0nuVFl6kBwZrkmxM8rqlSMWtuGbo/edit#gid=176933786", "test", [1, 2, 3, 4])
+
 

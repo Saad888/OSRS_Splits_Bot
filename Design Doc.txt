@@ -36,16 +36,10 @@ Similar to !add, but this will create a brand new user and give them the split
 If <amount> is left out, it will be assumed as 0
 
 
-!remove_user <user> 
+!remove <user> 
 -----
 Requires admin rank
 This will remove the specified user. 
-
-
-!undo
------
-Requires admin rank
-Undo's the last action
 
 
 !split <user>
