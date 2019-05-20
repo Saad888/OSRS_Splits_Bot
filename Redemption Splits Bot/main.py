@@ -1,5 +1,4 @@
 import sys
-import os
 import asyncio 
 import time
 import discord
@@ -8,11 +7,6 @@ import gspread
 import help_text
 from doc_scan import DocScanner
 from datetime import datetime
-
-try:
-    os.mkdir("Configs")
-except(FileExistsError):
-    pass
 
 client = discord.Client()
 
@@ -60,7 +54,7 @@ def first_time_setup():
     configs["Worksheet Name"] = str(input()).strip()
 
 
-    with open("./Configs/configs.json", "w") as file:
+    with open("configs.json", "w") as file:
         json.dump(configs, file, indent=4)
 
 
