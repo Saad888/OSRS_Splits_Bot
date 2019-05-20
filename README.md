@@ -38,7 +38,7 @@ Posts the commands in chat.
 
 ---
 
-# Spreadsheet Requirements
+# Spreadsheet and Discord Requirements
 The bot was designed for a specific spreadsheet format and must meet the following requirements:
 
 1. RNS need to be in Column A  
@@ -48,17 +48,52 @@ The bot was designed for a specific spreadsheet format and must meet the followi
 
 Additionally, there should be blank rows below so that additional members can be added. These rows at the very least should have =TODAY() under the clan join date as the bot copies and pastes that when adding a user without a specific join date.   
 
+### Admin Rank:
+The bot requires an administrator rank on the server to execute updates of splits and adding new members. Please ensure this rank exists and is given to the correct members
+
 ---
 
 # Setting up the bot
 
-<ADD BELOW>
+### Setting up Google API
 
+1. Navigate to the Google APIs console here: https://console.developers.google.com/?pli=1.  
+2. Login and accept terms if needed.  
+3. Create a new project (Along the top bar there should be an option for "Select a Project", under select New Project in the top right corner of the new window).  
+4. Set project name and continue. May take a few minutes to load.  
+5. Under the Dashboard, select Enable APIs and Services.  
+6. Select the Google Drive API and hit Enable.  
+7. Repeat for Google Sheets API (You can search for it directly in the search bar on the top).  
+8. Along the left sidebar, select Credentials.  
+9. Along the top of the bar, select the dropdown list under Create Credentials and select Service account key.  
+10. On the page to create a new service account key:  
+  a. Select "New service account" under Service Account.  
+  b. Create a name.  
+  c. Under Roles, select Project > Owner or Project > Editor.  
+  d. Select JSON as the key type.  
+11. A file should be downloaded to your PC. Save this in the same file as the bot file.  
+12. Rename the file to be credentials.json (This is important!).  
+13. Open the credentials.json in a text editor file and search for "client_email".  
+14. Copy the email link following that entry (e.g. "test-name@test-proj-20000.iam.gserviceaccount.com").  
+15. On the Google doc with the splits, give access to the sheet to the email from the credentials files (click Share in the top right of the Google doc and ensure they can edit).  
+Credentials for the google doc are now set!
+ 
+### Setting up Discord Bot:
+1. Navigate to the discord developers page (https://discordapp.com/developers/applications/).  
+2. Create a new application.  
+3. Select "Bot" on the left sidebar.  
+4. NBote its token listed under Username and next to Icon. This will needed later.  
+5. Return to General Information and copy the Client ID.  
+6. Navigate to https://discordapp.com/oauth2/authorize?&client_id=<CLIENTID>&scope=bot&permissions=8, replacing CLIENTID with the number copied from the previous step.  
+7. Add the bot to the correct server (You'll need admin rights in this server to do so).  
+The discord bot is now ready, all that is left to connect the bot to the script
 
-
-
-
-
-
-
-
+### Connecting script to the bot:
+1. If you initiate the script without any changes, it will run through a prompt to set up a configs file. It will ask you for the following 4 settings:
+  a. Bot Token
+  b. Admin Rank
+  c. Spreadsheet URL
+  d. Worksheet Name
+2. Follow the prompts given in the script and it will set itself up and save those settings in a file labled configs.json. 
+3. You can also make this file and set the configurations manually. A template for the configs file is available in the repository, just ensure the file is named configs.json.
+4. Anytime there is a change to the sheet (such as a different URL or worksheet name, change in bot token or change in admin rank name) the configs file needs to be updated. This can be done manually or you can delete the file and run through the first time set-up again. 
