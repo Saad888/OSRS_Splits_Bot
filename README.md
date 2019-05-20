@@ -81,7 +81,7 @@ Credentials for the google doc are now set!
 1. Navigate to the discord developers page (https://discordapp.com/developers/applications/).  
 2. Create a new application.  
 3. Select "Bot" on the left sidebar.  
-4. NBote its token listed under Username and next to Icon. This will needed later.  
+4. Note its token listed under Username and next to Icon. This will needed later.  
 5. Return to General Information and copy the Client ID.  
 6. Navigate to https://discordapp.com/oauth2/authorize?&client_id=CLIENTID&scope=bot&permissions=8, replacing CLIENTID with the number copied from the previous step.  
 7. Add the bot to the correct server (You'll need admin rights in this server to do so).  
