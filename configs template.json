@@ -1,0 +1,11 @@
+// Rename this file as "configs.json" and save in the same location as the
+// script or executable (whichever is being used). Alternativley, you can load 
+// the bot without this file and it will run you through the steps to create it 
+// automatically.
+
+{
+    "Bot Token": "",
+    "Admin Rank": "",
+    "Spreadsheet URL": "",
+    "Worksheet Name": ""
+}
