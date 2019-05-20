@@ -1,8 +1,0 @@
-2019-05-19 19:23:39 - ==========
-2019-05-19 19:23:39 - ==========
-2019-05-19 19:23:39 - Welcome! Initializing bot...
-2019-05-19 19:23:40 - Loading Configs File...
-2019-05-19 19:23:40 - configs.json was not found, initiating First Time Setup
-2019-05-19 19:23:42 - Please answer the following questions
-2019-05-19 19:23:43 - Please ensure Google API credentials are setup as per Readme
-2019-05-19 19:23:44 - Press enter to continue

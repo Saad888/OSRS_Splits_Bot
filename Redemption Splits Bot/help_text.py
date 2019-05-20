@@ -1,6 +1,6 @@
 # This only exists so my main file doesnt have this massive blob of text in the middle
 
-help_reply = """**!split <Runescape name>: Gets the splits for the given user**
+help_reply = """**!splits <Runescape name>: Gets the splits for the given user**
 e.g. !split Jagax 
 """
 

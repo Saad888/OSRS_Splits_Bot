@@ -57,6 +57,8 @@ def first_time_setup():
     with open("configs.json", "w") as file:
         json.dump(configs, file, indent=4)
 
+    return configs
+
 
 # Initiates bot, verifies all settings then launches Docs API
 try:
@@ -76,7 +78,7 @@ try:
     # If Configs/configs.json does not exist, initiates FTS
     except(FileNotFoundError):
         print_log("configs.json was not found, initiating First Time Setup", 2)
-        first_time_setup()
+        configs = first_time_setup()
 
 
     # Verifies all entries and google credentials file exist. 
@@ -269,7 +271,7 @@ async def on_message(message):
         await message.channel.send(reply)
 
     # Exit command - for debugging purposes only
-    #if message.content.startswith("!exit"):
+    # if message.content.startswith("!exit"):
     #    await client.logout()
 
 

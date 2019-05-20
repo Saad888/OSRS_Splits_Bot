@@ -28,8 +28,6 @@ class DocScanner:
         Adds user to spreadsheet with name, splits, date, and items
         Later 3 parameters are optional
 
-    delete_user(name: str):
-        Deletes row with user in spreadsheet (NON REVERSIBLE!)
     """
 
     def __init__(self, ss_URL: str, ws_name: str):
