@@ -1,6 +1,4 @@
-import sys
 import asyncio 
-import time
 import discord
 import json
 import gspread
@@ -10,14 +8,6 @@ from datetime import datetime
 
 client = discord.Client()
 
-def print_log(text, delay=0.35):
-    """Prints message with time in console and to log file"""
-    curTime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    message = curTime + " - " + str(text)
-    print(message)
-    with open("Log.txt", "a") as logger:
-        logger.write(message + "\n")
-    time.sleep(delay)
 
 
 def validate_date(given_date):
@@ -29,28 +19,23 @@ def validate_date(given_date):
         return False
 
 
-def invalid_input():
-    print_log(help_text.Invalid_Input)
-    sys.exit()
-
-
 def first_time_setup():
-    print_log("Please answer the following questions", 1)
-    print_log("Please ensure Google API credentials are setup as per Readme", 1)
-    print_log("Press enter to continue", 1)
+    print("Please answer the following questions", 1)
+    print("Please ensure Google API credentials are setup as per Readme", 1)
+    print("Press enter to continue", 1)
     input()
 
     configs = {}
-    print_log("1. Enter the Bot Token from the discord developement page (consult Readme for more info)")
+    print("1. Enter the Bot Token from the discord developement page (consult Readme for more info)")
     configs["Bot Token"] = str(input()).strip()
 
-    print_log("2. Enter the EXACT name of the required rank for bot admin commands")
+    print("2. Enter the EXACT name of the required rank for bot admin commands")
     configs["Admin Rank"] = str(input()).strip()
 
-    print_log("3. Enter the exact URL of the spreadsheet")
+    print("3. Enter the exact URL of the spreadsheet")
     configs["Spreadsheet URL"] = str(input()).strip()
 
-    print_log("4. Enter the exact name of the worksheet (or tab) of the google doc")
+    print("4. Enter the exact name of the worksheet (or tab) of the google doc")
     configs["Worksheet Name"] = str(input()).strip()
 
 
@@ -62,32 +47,32 @@ def first_time_setup():
 
 # Initiates bot, verifies all settings then launches Docs API
 try:
-    print_log("=" * 10)
-    print_log("=" * 10)
-    print_log("Welcome! Initializing bot...")
+    print("=" * 10)
+    print("=" * 10)
+    print("Welcome! Initializing bot...")
 
 
     # Loads configs file, if configs file does not exist initiates first time setup
     try:
-        print_log("Loading Configs File...")
+        print("Loading Configs File...")
         configs = {}
         # Opens and loads configs file
         with open("configs.json", "r") as configs_file:
-            print_log("configs.json file loaded")
+            print("configs.json file loaded")
             configs = json.load(configs_file)
     # If Configs/configs.json does not exist, initiates FTS
     except(FileNotFoundError):
-        print_log("configs.json was not found, initiating First Time Setup", 2)
+        print("configs.json was not found, initiating First Time Setup", 2)
         configs = first_time_setup()
 
 
     # Verifies all entries and google credentials file exist. 
-    print_log("Verifying configuration settings...")
+    print("Verifying configuration settings...")
     try:
         file = open("credentials.json", "r")
         file.close()
     except(FileNotFoundError):
-        print_log("credentials.json was not found, please consult the Readme")
+        print("credentials.json was not found, please consult the Readme")
         sys.exit()
 
     req_configs = (
@@ -100,40 +85,40 @@ try:
         for req in req_configs:
             configs[req]
     except(KeyError):
-        print_log("One or more of the required configs missing.")
+        print("One or more of the required configs missing.")
         invalid_input()
 
     print(json.dumps(configs, indent=4))
-    print_log(help_text.Initial_Message, 3)
+    print(help_text.Initial_Message, 3)
 
-    print_log("-" * 5)
+    print("-" * 5)
 
     # Prepares to open sheet, if error encounters exists application
-    print_log("Preparing to open spreadsheet...")
+    print("Preparing to open spreadsheet...")
 
     # Initiates spreadsheet or catches error when failed
     url = configs["Spreadsheet URL"]
     worksheet = configs["Worksheet Name"]
-    print_log("Loading document...")
+    print("Loading document...")
     try:
         doc = DocScanner(url, worksheet)
-        print_log("Document loaded correctly")
+        print("Document loaded correctly")
     except(gspread.exceptions.NoValidUrlKeyFound): 
-        print_log("ERROR: Document could not be loaded from the URL")
+        print("ERROR: Document could not be loaded from the URL")
         invalid_input()
     except(gspread.exceptions.WorksheetNotFound):
-        print_log("ERROR: Document could not find worksheet " + worksheet)
+        print("ERROR: Document could not find worksheet " + worksheet)
         invalid_input()
     except(FileNotFoundError):
-        print_log("ERROR: Credentials file could not be found")
-        print_log("Please obtain credentials as outlined in the Readme")
+        print("ERROR: Credentials file could not be found")
+        print("Please obtain credentials as outlined in the Readme")
 
     admin_rank = configs["Admin Rank"]
     token = configs["Bot Token"]
 
 
 except(SystemExit):
-    print_log("Press enter to exit...")
+    print("Press enter to exit...")
     input()
 
 
@@ -156,7 +141,7 @@ async def on_message(message):
 
     try:
         if message.content.startswith("!splits "):
-            print_log("User {}: {}".format(author, message.content))
+            print("User {}: {}".format(author, message.content))
             """Returns splits by user request"""
             msg = message.content
             username = msg.replace("!splits", "").strip()
@@ -169,10 +154,10 @@ async def on_message(message):
                 amount = response[0]
                 reply = "{} has an item split of {:,}!".format(name, amount)
             await message.channel.send(reply)
-            print_log(reply)
+            print(reply)
             
         if message.content.startswith("!update ") and admin is True:
-            print_log("User {}: {}".format(author, message.content))
+            print("User {}: {}".format(author, message.content))
             """Adds split amount if user has admin rank"""
             msg = message.content
 
@@ -209,10 +194,10 @@ async def on_message(message):
                 reply = incorrect_input_message["int"]
 
             await message.channel.send(reply)
-            print_log(reply)
+            print(reply)
 
         if message.content.startswith("!add ") and admin is True:
-            print_log("User {}: {}".format(author, message.content))
+            print("User {}: {}".format(author, message.content))
             """Adds user with inputs (!add_user name (split) (date) (items))"""
             msg = message.content
 
@@ -257,14 +242,14 @@ async def on_message(message):
                     reply = "User {} already exists!".format(name)
 
             await message.channel.send(reply)
-            print_log(reply)
+            print(reply)
 
     except(gspread.exceptions.APIError):
         reply = help_text.API_error
         await message.channel.send(reply)
 
     if message.content.startswith("!help"):
-        print_log("User {}: {}".format(author, message.content))
+        print("User {}: {}".format(author, message.content))
         reply = help_text.help_reply
         if admin is True:
             reply = reply + "\n" + help_text.admin_help_reply
@@ -277,24 +262,24 @@ async def on_message(message):
 
 @client.event
 async def on_ready():
-    print_log("Logged in as")
-    print_log(client.user.name)
-    print_log(client.user.id)
-    print_log("------")
+    print("Logged in as")
+    print(client.user.name)
+    print(client.user.id)
+    print("------")
 
 # Initiates dicord API
 try:
-    print_log("Initiating Discord API...")
+    print("Initiating Discord API...")
     loop = asyncio.get_event_loop()
     loop.run_until_complete(client.start(token))
 except(discord.errors.LoginFailure):
-    print_log("ERROR: Token was not accepted or correct")
+    print("ERROR: Token was not accepted or correct")
     invalid_input()
 except(discord.errors.GatewayNotFound, discord.errors.HTTPException):
-    print_log("ERROR: Cannot load discord API")
-    print_log("This can be due to lack of internet connection or API outage")
-    print_log("Please try again later")
+    print("ERROR: Cannot load discord API")
+    print("This can be due to lack of internet connection or API outage")
+    print("Please try again later")
     sys.exit()
 except(SystemExit):
-    print_log("Press enter to exit...")
+    print("Press enter to exit...")
     input()
