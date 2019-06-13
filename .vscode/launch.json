@@ -24,7 +24,6 @@
                     "remoteRoot": "."
                 }
             ],
-            "cwd": "${fileDirname}"
         },
         {
             "name": "Python: Module",

@@ -6,9 +6,10 @@ help_embed = {
     "n_check": "!check <RSN>",
     "v_check": "Shows stats for the player matching the given RSN.",
     "n_up": "!update <RSN>, <splits>, <items>",
-    "v_up": "Adds the split given to the player with the matching RSN. Items are optional but should be added as a comma separated list at the end.",
+    "v_up": "Adds the split given to the player with the matching RSN. Items are optional but should be added as a comma separated list at the end. Requires the @ADMIN role.",
     "n_add": "!add <RSN>, <splits>, <date>, <items>",
-    "v_add": "Creates a new player entry with the given RSN, splits, date, and items. The last three are optional but must be added in that order (so to add a date without adding a split value, use 0. e.g !add Player, 0, 6/12/2019).",
-    "footer": "Enter without the < >. !update and !add require the admin rank of @ADMIN."
+    "v_add": "Creates a new player entry with the given RSN, splits, date, and items. The last three are optional but must be added in that order (so to add a date without adding a split value, use 0. e.g !add Player, 0, 6/12/2019). Requires the @ADMIN role.",
+    "footer": "Bot designed by Xaad#1337"
 }
 
+API_error = "API Error, either there's been too many inputs in too short of a period or there's been another issue. Please try again in two minutes, if it doesnt work please contact Xaad#1337"

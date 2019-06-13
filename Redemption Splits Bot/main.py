@@ -5,7 +5,7 @@ import gspread
 import re
 from datetime import datetime
 from doc_scan import DocScanner
-from help_text import help_embed
+from help_text import help_embed, API_error
 
 
 class RedemptionBot(discord.Client):
@@ -55,13 +55,29 @@ class RedemptionBot(discord.Client):
         guild = channel.guild
         isAdmin = str(author.roles).find(self.admin_name) != -1
         
+        try:
+            await self.check(command, msg, author, channel, guild, isAdmin)
+        except gspread.exceptions.APIError:
+            await channel.send(API_error)
+
+
+
+    async def check(self, command, msg, author, channel, guild, isAdmin):
+        """Commands:
+        !check
+        !update
+        !add
+        !splits_help
+        """
         if command == 'check':
             # Request to find information on member
             print(f'User {author}: Checking for "{msg}"')
+            await channel.trigger_typing()
             await self.send_user(msg, channel, guild)
             
         if command == 'update' and isAdmin:
             print(f'User {author} updating: "{msg}"')
+            await channel.trigger_typing()
 
             # Updates user info (!update <name>, <split change>, <items>)
             inputs = msg.split(',')
@@ -122,6 +138,7 @@ class RedemptionBot(discord.Client):
 
         if command == 'add' and isAdmin:
             print(f'User {author} adding: "{msg}"')
+            await channel.trigger_typing()
 
             # Grabs inputs 
             inputs = msg.split(',')
@@ -167,6 +184,7 @@ class RedemptionBot(discord.Client):
                 await self.send_user(name, channel, guild)
 
         if command == 'splits_help':
+            await channel.trigger_typing()
             # Sends help text
             em = help_embed
             emb = discord.Embed(
@@ -174,20 +192,14 @@ class RedemptionBot(discord.Client):
                 description=em['desc'], 
                 color=0x01b0cf
             )
+            v_up = em['v_up'].replace('@ADMIN', self.admin_name)
+            v_add = em['v_add'].replace('@ADMIN', self.admin_name)
             emb.add_field(name=em['n_check'], value=em['v_check'], inline=False)
-            emb.add_field(name=em['n_up'], value=em['v_up'], inline=False)
-            emb.add_field(name=em['n_add'], value=em['v_add'], inline=False)
-            footer = em['footer'].replace('@ADMIN', self.admin_name)
-            emb.set_footer(text=footer)
+            emb.add_field(name=em['n_up'], value=v_up, inline=False)
+            emb.add_field(name=em['n_add'], value=v_add, inline=False)
+            emb.set_footer(text=em['footer'])
             await channel.send(embed=emb)
 
-        if command == 'exit':
-            self.logout()
-            loop = asyncio.get_event_loop()
-            loop.stop()
-
-        if command == 'test':
-            await channel.send('This is a test')
 
     async def send_user(self, name, channel, guild):
         # Send embed with splits info
