@@ -1,8 +1,7 @@
 // Rename this file as "configs.json" and save in the same location as the
-// script or executable (whichever is being used). Alternativley, you can load 
-// the bot without this file and it will run you through the steps to create it 
-// automatically.
-
+// script or executable (whichever is being used). ONLY add values within the ""
+// Do NOT remove the , after or change any other names or values
+// ALSO IMPORTANT: REMOVE THESE COMMENTS WHEN YOU ARE DONE
 {
     "Bot Token": "",
     "Admin Rank": "",

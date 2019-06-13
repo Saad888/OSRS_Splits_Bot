@@ -9,7 +9,8 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "cwd": "${fileDirname}"
         },
         {
             "name": "Python: Remote Attach",
@@ -22,14 +23,16 @@
                     "localRoot": "${workspaceFolder}",
                     "remoteRoot": "."
                 }
-            ]
+            ],
+            "cwd": "${fileDirname}"
         },
         {
             "name": "Python: Module",
             "type": "python",
             "request": "launch",
             "module": "enter-your-module-name-here",
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "cwd": "${fileDirname}"
         },
         {
             "name": "Python: Django",
@@ -42,7 +45,8 @@
                 "--noreload",
                 "--nothreading"
             ],
-            "django": true
+            "django": true,
+            "cwd": "${fileDirname}"
         },
         {
             "name": "Python: Flask",
@@ -57,14 +61,16 @@
                 "--no-debugger",
                 "--no-reload"
             ],
-            "jinja": true
+            "jinja": true,
+            "cwd": "${fileDirname}"
         },
         {
             "name": "Python: Current File (External Terminal)",
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "console": "externalTerminal"
+            "console": "externalTerminal",
+            "cwd": "${fileDirname}"
         }
     ]
 }
